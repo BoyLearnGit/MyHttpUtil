@@ -18,6 +18,9 @@ public class HttpTestController {
 //		System.out.println(result);
 		try {
 		System.out.println(HttpsUtil.get("http://192.168.112.48:8080//test1",null,null));
+		
+		
+		
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
