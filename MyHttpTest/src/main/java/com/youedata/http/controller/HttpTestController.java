@@ -117,7 +117,7 @@ public class HttpTestController {
 			dto.setOrderType(Const.ORDER_TYPE_CONSUME);
 			dto.setUserId(1L);
 			dto.setUserType(1);
-			BaseResult result=billingService.saveBill1(dto);
+			BaseResult result=billingService.saveBill(dto);
 			System.out.println(result.getMsg());
 			return result.getMsg();
 		
