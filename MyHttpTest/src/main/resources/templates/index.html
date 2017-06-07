@@ -1,0 +1,60 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	
+<script type="text/javascript" th:src="@{jquery.min.js}"></script>
+<script type="text/javascript">
+	function uploadFile() {
+		var formData = new FormData($("#form")[0]);
+		$.ajax({
+			type : 'post',
+			dataType : 'json',
+			contentType : false,
+			data : formData,
+			processData : false,
+			url : 'http://192.168.112.10:9090/personcerter/updateHead',
+			success : function(data) {
+				//var  data = jQuery.parseJSON(jQuery(data).text());
+				console.log(data);
+			},
+			error : function(data) {
+				// var  data = jQuery.parseJSON(jQuery(data).text());
+				console.log(e);
+			}
+
+		});
+	}
+	$("#topicMapInp").on("change", function() {
+		console.log($("#proNamesDataForm"))
+		console.log($("#proNamesDataForm")[0])
+		console.log($("#proNamesDataForm")[1])
+		/*var formData = new FormData($('#proNamesDataForm').find(' #topicMapInp[name^="file"]')); */
+		var formData = new FormData($("#proNamesDataForm")[0]);
+		$.ajax({
+			//url:G_domainh+"goods/upload_image",
+			url : "http://192.168.112.44:9090/goodsmanager/upload_image",
+			type : "POST",
+			dataType : "json",
+			contentType : false,
+			data : formData,
+			processData : false,
+			success : function(data) {
+				console.log(data);
+
+				if (data.code == 1) {
+					//$("#topicMap").prop("src",data.result.datas[0].image_url);
+				}
+			}
+		});
+	});
+</script>
+<body>
+	<h2>Hello World!</h2>
+	<form id="form" enctype="multipart/form-data">
+
+		<input type="file" id="file" name="file" /> <input type="button"
+			value="提交" onclick="uploadFile()" />
+	</form>
+</body>
+</html>

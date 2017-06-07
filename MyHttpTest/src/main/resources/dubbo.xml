@@ -17,7 +17,7 @@
 	<dubbo:reference id="billingSerivce" check="false" interface="com.youedata.billingService.service.BillingService" group="billing" version="1.0.0">
 	</dubbo:reference>
 	<dubbo:reference id="proxyService" check="false" 
-		 		interface="com.youedata.proxy.service.ProxyService">
+		 		interface="com.youedata.proxy.service.ProxyService" group="proxy" version="1.0.0">
 	</dubbo:reference>
 
 </beans>

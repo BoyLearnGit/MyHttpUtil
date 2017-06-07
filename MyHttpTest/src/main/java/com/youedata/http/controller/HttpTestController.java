@@ -10,6 +10,10 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,9 +26,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.youedata.billingService.service.BillingService;
 import com.youedata.domain.common.Const;
+import com.youedata.domain.dto.AccountDetailDTO;
+import com.youedata.domain.dto.AccountDetailResultDTO;
+import com.youedata.domain.dto.ApiTimesFrozenDTO;
 import com.youedata.domain.dto.ApiUseStatusDTO;
 import com.youedata.domain.dto.BaseResult;
 import com.youedata.domain.dto.BillDTO;
+import com.youedata.domain.dto.GoodsDTO;
+import com.youedata.domain.dto.OrderDTO;
+import com.youedata.domain.dto.OrderResultDTO;
 import com.youedata.domain.dto.UserUseApiDTO;
 import com.youedata.http.utils.HttpUtil;
 import com.youedata.http.utils.HttpsUtil;
@@ -75,8 +85,8 @@ public class HttpTestController {
 	@RequestMapping("test1")
 	@ResponseBody
 	public String httpTest1(HttpServletRequest request,HttpServletResponse response,HttpSession session){
-		System.out.println("成功");
-		return "success";
+		ApiTimesFrozenDTO result=billingService.getValueForRedis("30_6831116430173779648_1");
+		return result.toString();
 	}
 	
 	@RequestMapping("test2")
@@ -107,16 +117,37 @@ public class HttpTestController {
 		@RequestMapping("test3")
 		@ResponseBody
 		public String httpTest3(HttpServletRequest request,HttpServletResponse response,HttpSession session){
+//			BillDTO dto=new BillDTO();
+//			dto.setAmount(1000L);
+//			dto.setOrderId(1L);
+//			dto.setOrderType(Const.ORDER_TYPE_CONSUME);
+//			dto.setUserId(1L);
+//			dto.setUserType(1);
+			//预付费类型的交易
+			//充值
+//			BillDTO dto=new BillDTO();
+//			dto.setAmount(10000000L);
+//			dto.setChargingType(Const.CHARGING_TYPE_PRESTORE);
+//			dto.setOrderType(Const.ORDER_TYPE_RECHARGE);
+//			dto.setUserId(31L);
+//			dto.setUserType(Const.USER_TYPE_ORDINARY);
+//			dto.setPayModel(100);
+			//消费
 			BillDTO dto=new BillDTO();
-			dto.setAllowTimes(10);
-			dto.setAmount(1000L);
-			dto.setDataId("api1,api2,api3");
-			dto.setDataType(Const.DATA_TYPE_API);
-			dto.setGoodsId(1L);
-			dto.setOrderId(1L);
+			dto.setAmount(0L);
+			dto.setChargingType(Const.CHARGING_TYPE_PRESTORE);
+			dto.setOrderId(new Random().nextLong());
 			dto.setOrderType(Const.ORDER_TYPE_CONSUME);
-			dto.setUserId(1L);
-			dto.setUserType(1);
+			dto.setUserId(31L);
+			dto.setUserType(Const.USER_TYPE_ORDINARY);
+			List<GoodsDTO> list=new ArrayList<GoodsDTO>();
+			GoodsDTO goods=new GoodsDTO();
+			goods.setAllowTimes(0);
+			goods.setDataId("api1");
+			goods.setDataType(Const.DATA_TYPE_API);
+			goods.setGoodsId(1L);
+			list.add(goods);
+			dto.setGoodsList(list);
 			BaseResult result=billingService.saveBill(dto);
 			System.out.println(result.getMsg());
 			return result.getMsg();
@@ -127,8 +158,8 @@ public class HttpTestController {
 		@ResponseBody
 		public String httpTest4(HttpServletRequest request,HttpServletResponse response,HttpSession session){
 			ApiUseStatusDTO dto=new ApiUseStatusDTO();
-			dto.setDataId("api");
-			dto.setToken("12AA5955F55F4977A5FE91C0273FD5F3");
+			dto.setDataId("api1");
+			dto.setToken("0A32C24D8F0E49E28D4F5D50089808FB");
 			BaseResult result=billingService.apiUseFrozen(dto);
 			System.out.println(result.getMsg());
 			return result.getMsg();
@@ -140,12 +171,45 @@ public class HttpTestController {
 		public String httpTest5(HttpServletRequest request,HttpServletResponse response,HttpSession session){
 			UserUseApiDTO dto=new UserUseApiDTO();
 			dto.setDataType(Const.DATA_TYPE_API);
-			dto.setUseResult(1);
-			dto.setUseTag(Math.random()*100000000+"");
+			dto.setUseResult(2);
+			dto.setUseTag(Math.random()*100000+"");
 			dto.setUseTime(System.currentTimeMillis());
-			dto.setDataId("api");
-			dto.setToken("12AA5955F55F4977A5FE91C0273FD5F3");
+			dto.setDataId("api1");
+			dto.setToken("0A32C24D8F0E49E28D4F5D50089808FB");
 			BaseResult result=proxyService.invoke(dto);
+			System.out.println(result.getMsg());
+			return result.getMsg();
+		
+	}
+		
+		@RequestMapping("test6")
+		@ResponseBody
+		public String httpTest6(HttpServletRequest request,HttpServletResponse response,HttpSession session){
+			OrderDTO orderDTO=new OrderDTO();
+			orderDTO.setBillType(200);
+			orderDTO.setUserId(30L);
+			Date date=new Date(117,04,06,11,54,16);
+			
+			orderDTO.setStartDate(new Date(117,04,06,11,54,16));
+			orderDTO.setEndDate(new Date(117,04,06,11,54,18));
+			OrderResultDTO result=billingService.searchOrderInfo(orderDTO);
+			System.out.println(result.getMsg());
+			return result.getMsg();
+		
+	}
+		
+		@RequestMapping("test7")
+		@ResponseBody
+		public String httpTest7(HttpServletRequest request,HttpServletResponse response,HttpSession session){
+			AccountDetailDTO accountDetialDTO=new AccountDetailDTO();
+//			orderDTO.setBillType(200);
+//			orderDTO.setUserId(30L);
+//			Date date=new Date(117,04,06,11,54,16);
+//			orderDTO.setStartDate(new Date(117,04,06,11,54,16));
+//			orderDTO.setEndDate(new Date(117,04,06,11,54,18));
+//			accountDetialDTO.setBillType("");
+			accountDetialDTO.setUserId(30L);
+			AccountDetailResultDTO result=billingService.searchAccountDetial(accountDetialDTO);
 			System.out.println(result.getMsg());
 			return result.getMsg();
 		
