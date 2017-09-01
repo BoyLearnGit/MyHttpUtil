@@ -211,7 +211,9 @@ public class HttpTestController {
 			accountDetialDTO.setUserId(30L);
 			AccountDetailResultDTO result=billingService.searchAccountDetial(accountDetialDTO);
 			System.out.println(result.getMsg());
+			System.out.println("hahah");
 			return result.getMsg();
+			
 		
 	}
 }
